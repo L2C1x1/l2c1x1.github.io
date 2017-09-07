@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta id="meta" name="viewport" content="width=device-width; initial-scale=1.0"/>
+<title>리니지 2 크로니클 1 : 전쟁의 전조</title>
+<link rel="stylesheet" type="text/css" href="styles.css"/>
+<style type="text/css">
+#menu_dev {
+	display: none;
+	margin-top: 2em;
+}
+#online_counters tr {
+	cursor: default;
+}
+</style>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+</head>
+<body>
+<ul class="menu">
+<li class="gm">Welcome to the L2 C1 x1 fan-club<span class="wide-screen"> and our <span title="Public Test Server">PTS</span> landing page</span>!</li>
+<!--<li class="gm">Announcement: If you experience a login problem, please contact us at <a class="party" href="mailto:l2c1x1fc@gmail.com?subject=login problem">l2c1x1fc@gmail.com</a></li>-->
+
+
+<li><a href="#about">&rarr; preamble / about</a>
+<div id="about" class="collapse">
+	<!--#include file="about.html" -->
+</div></li>
+
+
+<li><a href="#news">&rarr; news</a>
+<div id="news" class="collapse">
+	<!--#include file="news.html" -->
+</div></li>
+
+
+<li><a href="#terms">&rarr; terms and conditions</a>
+<div id="terms" class="collapse">
+	<!--#include file="terms.html" -->
+</div>
+</li>
+
+
+<li><a href="#privacy">&rarr; privacy policy</a>
+<div id="privacy" class="collapse">
+	<!--#include file="privacy.html" -->
+</div>
+</li>
+
+
+<li><a href="#client">&rarr; client download</a>
+<div id="client" class="collapse">
+	<p>In order to play on our fan-club PTS you need to download either <a href="http://update.l2c1x1.com/LineageII.exe">Tiny Updater Application</a> which will download all the client files by itself<br/>
+	or <a href="http://download.l2c1x1.com/LineageII.zip">Complete Client Package</a> in a zip archive. Regardless of the method you chose you should run client using <u>LineageII.exe</u> updater executable.</p>
+	<p>Here are all the download links for your convenience:</p>
+	<ul class="menu">
+	<li><a href="http://update.l2c1x1.com/LineageII.exe">&rarr; Tiny Updater Application (500 kb)</a></li>
+	<li><a href="http://download.l2c1x1.com/LineageII.zip">&rarr; Complete Client Package (1.28 Gb)</a></li>
+	</ul>
+</div></li>
+
+
+<li><a href="#reg">&rarr; account registration</a>
+<div id="reg" class="collapse">
+	<a href="https://m.me/l2c1x1" title="external link" target="_blank">&rarr; using Nyx, the chatbot</a> (<a href="https://youtu.be/ZCm3F4DcXLs" title="external link" target="_blank">click here</a> to watch 30 seconds demo)<br/>
+	<a href="911" title="external link" target="_blank">&rarr; online registration form</a>
+</div></li>
+
+
+<li><a href="#spec" title="precise description of what is inside">&rarr; server specification</a>
+<div id="spec" class="collapse">
+	Lineage II Chronicle 1: Harbingers of War (L2 C1 x1), as described in<br/>
+	<a href="docs/prima_guide_c1.pdf" title="pdf document" target="_blank">&rarr; PRIMA<sup>&reg;</sup> <small>OFFICIAL GAME GUIDE</small>: Lineage II Chronicle 1 - Harbingers of War</a>, including<br/>
+	<a href="docs/prima_guide_errata.pdf" title="pdf document" target="_blank">&rarr; Lineage II: Chronicle I, the Harbingers of War Errata</a>, including<br/>
+	<a href="https://bitbucket.org/t911/pts/issues?status=new&status=open&kind=bug" title="external link" target="_blank">&rarr; Known Issues (listed on Bitbucket)</a><br/>
+</div></li>
+
+
+<li><a href="#faq" title="Frequently Asked Questions">&rarr; faq</a>
+<div id="faq" class="collapse">
+	<!--#include file="faq.html" -->
+</div></li>
+
+
+<li><a href="#join">&rarr; join/contact</a>
+<div id="join" class="collapse">
+	<!--#include file="join.html" -->
+</div></li>
+</ul>
+
+
+<ul id="menu_dev" class="menu">
+<li class="gm">For Developers</li>
+<li><a href="docs/c1_gm_commands.pdf" title="pdf document" target="_blank">&rarr; C1 GM commands</a></li>
+
+<li><a href="#rest-api">&rarr; RESTful API</a>
+<div id="rest-api" class="collapse">
+	<a href="https://l2c1x1.com/api.html" title="external link" target="_blank">&rarr; Public API</a><br/>
+	<a href="https://l2c1x1.com/user-api.html" title="external link" target="_blank">&rarr; User API</a>
+</div>
+</li>
+
+<li><a href="#server_files">&rarr; server files</a>
+<div id="server_files" class="collapse">
+	<p>Here you can get the PTS itself. This is exactly what is currently running on our private server.</p>
+	<p><a href="https://bitbucket.org/t911/pts" title="external link" target="_blank">&#8623; Current version on BitBucket &#8623;</a></p>
+	<ul class="menu">
+		<li><a href="server/1.0.0.1.7Z">&searr; v1.0.0.1 (1.0.0.1.7Z, 95.5MB, 06/04/2016)</a></li>
+		<li><a href="server/1.0.0.2.7Z">&searr; v1.0.0.2 (1.0.0.2.7Z, 20.9KB, 07/04/2016)</a></li>
+		<li><a href="server/1.0.0.3.7Z">&searr; v1.0.0.3 (1.0.0.3.7Z, 399KB, 25/04/2016)</a></li>
+		<li><a href="server/1.0.0.4.7Z">&searr; v1.0.0.4 (1.0.0.4.7Z, 246KB, 25/04/2016)</a></li>
+	</ul>
+</div></li>
+</ul>
+
+
+<div id="menu_dev_btn" style="position: fixed; top: 0; right: 0; margin: 0.1em 0.2em; font-size: small;">
+	<a href="javascript:void(0);">for developers</a>
+</div>
+<table id="online_counters" cellspacing="0" cellpadding="0" style="position: fixed; bottom: 2em; right: 0; margin: 0.1em 0.2em; font-size: small;">
+	<tr><td>[1]</td><td>Heaven:</td><td></td></tr>
+<!--	<tr><td>[2]</td><td>Hell:</td><td id="online_hell"></td></tr>
+	<tr><td>[3]</td><td>Chaos:</td><td id="online_chaos"></td></tr>-->
+</table>
+<div style="position: fixed; bottom: 0; left: 0; margin: 0.1em 0.2em;">
+Lineage II Chronicle 1: Harbingers of War
+</div>
+<div class="wide-screen" style="position: fixed; bottom: 0; right: 0; margin: 0.1em 0.2em;">
+리니지 2 크로니클 1 : 전쟁의 전조
+</div>
+</body>
+
+<!-- GOOGLE ANALYTICS -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-76473580-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+<script type="text/javascript">
+jQuery(function() {
+	var menu_dev = jQuery("#menu_dev");
+	var menu_dev_btn = jQuery("#menu_dev_btn");
+	var online_counters = jQuery("#online_counters");
+	var online_heaven_tr = online_counters.find("tr").first();
+	var online_heaven_td = online_heaven_tr.find("td").last();
+
+	function show_dev() {
+		menu_dev.css("display", "block");
+		menu_dev_btn.css("display", "none");
+		document.cookie = 'show_dev=true';
+	}
+
+	function update_online_count() {
+		jQuery.getJSON(
+				'/services/misc/online-count',
+				null,
+				function(data) {
+					online_heaven_tr.attr('title', 'characters: ' + data.onlineCount + '\nplayers: ' + data.ipCount);
+					online_heaven_td.html(data.ipCount + "/" + data.onlineCount);
+				}
+		);
+	}
+
+	menu_dev_btn.bind("click", show_dev);
+
+	if(document.cookie.indexOf('show_dev=true') != -1) {
+		show_dev();
+	}
+
+	update_online_count();
+	setInterval(update_online_count, 1 << 18);
+});
+</script>
+</html>

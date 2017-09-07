@@ -1,0 +1,7 @@
+v1.0.0.2
+	Quests: Human Mystic's Tutorial
+	Translations: boss shout
+	Translations: ship shout
+v1.0.0.3
+	Translations: teleport locations
+	Translations: user prompts in quests (1903 translations)

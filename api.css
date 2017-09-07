@@ -1,0 +1,12 @@
+input, select {
+	font: 1em monospace;
+}
+
+input {
+	border: none;
+}
+
+h3 i.fa-refresh {
+	float: right;
+	cursor: pointer;
+}

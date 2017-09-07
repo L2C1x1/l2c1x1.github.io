@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta id="meta" name="viewport" content="width=device-width; initial-scale=1.0"/>
+	<title>User API</title>
+
+	<link rel="stylesheet" type="text/css" href="api.css"/>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+	<!-- Highcharts -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/data.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+	<!-- Additional files for the Highslide popup effect -->
+	<script src="https://www.highcharts.com/samples/static/highslide-full.min.js"></script>
+	<script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="https://www.highcharts.com/samples/static/highslide.css"/>
+
+</head>
+<body>
+<h1>User API</h1>
+
+<p>User API can be used by registered users only. It provides an access to some personalized data. Requires authentication with a game account.</p>
+
+<fieldset style="font-family: monospace;"><legend style="font-family: monospace;">Authentication With a User Account</legend>
+	<label for="auth">Authorization: </label>Basic <input type="password" id="auth" placeholder="username:password">
+</fieldset>
+
+<hr/><h3>Extended Active Players List</h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/misc/list-active-players
+Query Params:
+	days: integer, values 0/1/7, default: 0
+
+Example: GET /services/misc/list-active-players?<label for="active-players-days">days=</label><select id="active-players-days">
+	<option value="0" selected>0</option>
+	<option value="1">1</option>
+	<option value="7">7</option>
+</select>
+</pre>
+<pre id="active_players_list"></pre>
+
+<hr/><h3>Extended Worth History</h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/analytics/worth-history
+Query Params:
+	timeframe: integer, values 3600/86400, default: 3600
+	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	from: date, format yyyy-mm-dd, default: to - days
+	to: date, format yyyy-mm-dd, default: today
+	nicknames: array of nicknames to return data for (maximum 10); nicknames=nick1&nicknames=nick2&...
+	align: boolean, values true/false
+
+Example: GET /services/analytics/worth-history
+	?<label for="worth-history-timeframe">timeframe=</label><select id="worth-history-timeframe">
+	<option value="3600">3600</option>
+	<option value="86400" selected>86400</option>
+</select>&amp;<label for="worth-history-days">days=</label><select id="worth-history-days">
+	<option value="4">4</option>
+	<option value="7">7</option>
+	<option value="31">31</option>
+	<option value="91">91</option>
+	<option value="181" selected>181</option>
+</select>
+	&<label for="worth-history-nicknames">nicknames=</label><input type="text"
+	placeholder="comma-separated list" id="worth-history-nicknames" style="width: 480px;"/>
+</pre>
+<div id="worth_history"></div>
+
+<hr/>
+
+<p>&copy; 2016 - 2017 <a href="/">L2C1x1</a>. All rights reserved.</p>
+
+</body>
+<script type="text/javascript">
+function resolveAbsoluteURL(relativeURL) {
+	return "https://l2c1x1.com" + (relativeURL.startsWith("/")? "": "/") + relativeURL;
+}
+
+jQuery(function() {
+	// define global colors
+	Highcharts.setOptions({
+		colors: [
+			'#7cb5ec',
+			'#90ed7d',
+			'#f7a35c',
+			'#8085e9',
+			'#f15c80',
+			'#e4d354',
+			'#2b908f',
+			'#f45b5b',
+			'#91e8e1',
+			'#434348'
+		]
+	});
+
+	var auth = jQuery("#auth");
+	auth.bind("change", function(e) {
+		document.cookie = "gm-auth=" + this.value;
+	});
+
+	var active_players_days = jQuery("#active-players-days");
+	active_players_days.bind("change", function(e) {
+		listActivePlayers(this.value);
+	});
+
+	var worth_history_days = jQuery("#worth-history-days");
+	var worth_history_timeframe = jQuery("#worth-history-timeframe");
+	var worth_history_nicknames = jQuery("#worth-history-nicknames");
+	worth_history_days.bind("change", function(e) {
+		drawWorthHistory();
+	});
+	worth_history_timeframe.bind("change", function(e) {
+		worth_history_days.val(this.value == 3600? 4: 91);
+		drawWorthHistory();
+	});
+	worth_history_nicknames.bind("change", function(e) {
+		document.cookie = "worth_history_nicknames=" + this.value;
+		drawWorthHistory();
+	});
+
+	// load values from cookies
+	auth.val(read_cookie("gm-auth"));
+	worth_history_nicknames.val(read_cookie("worth_history_nicknames"));
+
+	// display initial data
+	listActivePlayers();
+	if(auth.val() && worth_history_nicknames.val()) {
+		drawWorthHistory();
+	}
+
+	/********** active players list **********/
+	function listActivePlayers(days) {
+		if(!days) {
+			days = active_players_days.val();
+		}
+		jQuery.ajax({
+			beforeSend: function(xhr) {
+				var auth_header = auth.val();
+				if(auth_header) {
+					xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth_header));
+				}
+			},
+			dataType: "json",
+			url: resolveAbsoluteURL('/services/misc/list-active-players'),
+			data: {
+				days: days
+			},
+			success: function(data) {
+				var html = "Count: " + data.count;
+				if(data.count > 0) {
+					if(data.accounts) {
+						html += '<table border>';
+						html += '<caption>Players List</caption>';
+						html += '<tr><th></th><th>character</th><th>class</th><th>account</th><th>IP</th><th>Location</th></tr>';
+						for(var i = 0; i < data.nicknames.length; i++) {
+							var builder = data.builderLevels[i];
+							html += '<tr><td>'
+									+ (i + 1) + '</td><td' + (builder > 0? ' style="font-weight: bold;"': '') + '>'
+									+ data.nicknames[i]
+									+ (builder > 0? ' [' + builder + ']': ' (' + data.levels[i] + ')')
+									+ '</td><td>'
+									+ data.classes[i] + '</td><td>'
+									+ data.accounts[i] + '</td><td>'
+									+ data.ips[i] + '</td><td>['
+									+ data.countryCodes[i] + '] '
+									+ data.cityNames[i] + '</td></tr>';
+						}
+						html += '</table>';
+					}
+					else {
+						html += "\nCharacters:\n\t";
+						html += data.nicknames.join("\n\t");
+					}
+				}
+				jQuery("#active_players_list").html(html);
+			}
+		});
+	}
+
+	/********** worth history **********/
+	function drawWorthHistory(timeframe, days, nicknames) {
+		if(!timeframe) {
+			timeframe = worth_history_timeframe.val();
+		}
+		if(!days) {
+			days = worth_history_days.val();
+		}
+		if(!nicknames) {
+			nicknames = worth_history_nicknames.val().split(",");
+		}
+		jQuery.ajax({
+			traditional: true,
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth.val()));
+			},
+			dataType: "json",
+			url: resolveAbsoluteURL('/services/analytics/worth-history'),
+			data: {
+				timeframe: timeframe,
+				days: days,
+				nicknames: nicknames
+			},
+			success: function(data) {
+				for(var i = 0; i < data.timestamps.length; i++) {
+					var date = new Date(data.timestamps[i]);
+					if(timeframe == 3600) {
+						data.timestamps[i] = getDayName(date.getDay()) + ", " + date.getHours() + ":00";
+					}
+					else {
+						data.timestamps[i] = getMonthName(date.getMonth()) + ", " + date.getDate();
+					}
+				}
+
+				var series = [];
+
+				for(var charName in data.charWorthHistories) {
+					if(data.charWorthHistories.hasOwnProperty(charName)) {
+						series.push({
+							name: charName + ' Worth',
+							data: data.charWorthHistories[charName].worthValues
+						});
+						series.push({
+							name: charName + ' Adena',
+							data: data.charWorthHistories[charName].adenaValues
+						});
+					}
+				}
+
+				jQuery('#worth_history').highcharts({
+					title: {
+						text: 'Worth History'
+					},
+					xAxis: {
+						categories: data.timestamps,
+						labels: {
+							rotation: -90,
+							style: {
+								fontSize: '1em'
+							}
+						}
+					},
+					yAxis: {
+						title: {
+							text: 'Adena Worth Value'
+						},
+						min: 0,
+						allowDecimals: false
+					},
+					legend: {
+						enabled: false
+					},
+					tooltip: {
+						headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+						pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+						'<td style="padding:0"><b>{point.y}</b></td></tr>',
+						footerFormat: '</table>',
+						shared: true,
+						useHTML: true
+					},
+					series: series
+				});
+			}
+		});
+	}
+});
+
+
+
+
+function getDayName(index) {
+	if(index == 0) {
+		return "Sun";
+	}
+	if(index == 1) {
+		return "Mon";
+	}
+	if(index == 2) {
+		return "Tue";
+	}
+	if(index == 3) {
+		return "Wed";
+	}
+	if(index == 4) {
+		return "Thu";
+	}
+	if(index == 5) {
+		return "Fri";
+	}
+	if(index == 6) {
+		return "Sat";
+	}
+	return "Unknown";
+}
+
+function getMonthName(index) {
+	if(index == 0) {
+		return "Jan";
+	}
+	if(index == 1) {
+		return "Feb";
+	}
+	if(index == 2) {
+		return "Mar";
+	}
+	if(index == 3) {
+		return "Apr";
+	}
+	if(index == 4) {
+		return "May";
+	}
+	if(index == 5) {
+		return "Jun";
+	}
+	if(index == 6) {
+		return "Jul";
+	}
+	if(index == 7) {
+		return "Aug";
+	}
+	if(index == 8) {
+		return "Sep";
+	}
+	if(index == 9) {
+		return "Oct";
+	}
+	if(index == 10) {
+		return "Nov";
+	}
+	if(index == 11) {
+		return "Dec";
+	}
+	return "Unknown";
+}
+
+function read_cookie(name) {
+	var cookies = document.cookie;
+	var index = cookies.indexOf(name + "=");
+	if(index != -1) {
+		index += name.length + 1;
+		var index2 = cookies.indexOf(";", index);
+		if(index2 != -1) {
+			return cookies.substring(index, index2);
+		}
+		else {
+			return cookies.substring(index);
+		}
+	}
+	return "";
+}
+</script>
+
+<!-- GOOGLE ANALYTICS -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-76473580-1', 'auto');
+ga('send', 'pageview');
+</script>
+</html>

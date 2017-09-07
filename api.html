@@ -1,0 +1,669 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta id="meta" name="viewport" content="width=device-width; initial-scale=1.0"/>
+	<title>Public API</title>
+
+	<link rel="stylesheet" type="text/css" href="api.css"/>
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+	<!-- Highcharts -->
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/modules/data.js"></script>
+	<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+	<!-- Additional files for the Highslide popup effect -->
+	<script src="https://www.highcharts.com/samples/static/highslide-full.min.js"></script>
+	<script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="https://www.highcharts.com/samples/static/highslide.css"/>
+
+	<!-- Font Awesome, http://fontawesome.io/ -->
+	<script src="https://use.fontawesome.com/8e28eda7e4.js"></script>
+</head>
+<body>
+<h1>Public API</h1>
+
+<p>Public API can be used by anyone and doesn't require authentication. Number of requests is limited to 300 per 5 minutes per IP. If you're building an app on top of it and you need more quota, please give us a note by emailing to <a href="mailto:l2c1x1fc@gmail.com">l2c1x1fc@gmail.com</a>. Please provide some basic info about your project in your email.</p>
+
+<hr id="h_online_count"/><h3>Online Count <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/misc/online-count
+Query Params:
+	days: integer, values 0/1/7, default: 0
+
+Example: GET /services/misc/online-count?<label for="online-count-days">days=</label><select id="online-count-days">
+	<option value="0" selected>0</option>
+	<option value="1">1</option>
+	<option value="7">7</option>
+</select>
+</pre>
+<pre id="online_count"></pre>
+
+<hr id="h_active_players_list"/><h3>Active Players List <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/misc/list-active-players
+Query Params:
+	days: integer, values 0/1/7, default: 0
+
+Example: GET /services/misc/list-active-players?<label for="active-players-days">days=</label><select id="active-players-days">
+	<option value="0" selected>0</option>
+	<option value="1">1</option>
+	<option value="7">7</option>
+</select>
+</pre>
+<pre id="active_players_list"></pre>
+
+<hr id="h_server_stats"/><h3>Statistics <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/misc/server-stats
+
+Example: GET /services/misc/server-stats
+</pre>
+<pre id="server_stats"></pre>
+
+<hr id="h_pts_status"/><h3>Server Status <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/misc/pts-status
+
+Example: GET /services/misc/pts-status
+</pre>
+<pre id="pts_status"></pre>
+
+<hr id="h_online_history"/><h3>Online History <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/analytics/online-history
+Query Params:
+	timeframe: integer, values 3600/86400, default: 3600
+	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	from: date, format yyyy-mm-dd, default: to - days
+	to: date, format yyyy-mm-dd, default: today
+
+Example: GET /services/analytics/online-history?<label for="online-history-timeframe">timeframe=</label><select id="online-history-timeframe">
+	<option value="3600">3600</option>
+	<option value="86400" selected>86400</option>
+</select>&amp;<label for="online-history-days">days=</label><select id="online-history-days">
+	<option value="4">4</option>
+	<option value="7">7</option>
+	<option value="31">31</option>
+	<option value="91">91</option>
+	<option value="181" selected>181</option>
+</select>
+</pre>
+<div id="online_history"></div>
+
+<hr id="h_total_worth_history"/><h3>Market Volume <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/analytics/worth-history
+Query Params:
+	timeframe: integer, values 3600/86400, default: 3600
+	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	from: date, format yyyy-mm-dd, default: to - days
+	to: date, format yyyy-mm-dd, default: today
+
+Example: GET /services/analytics/worth-history?<label for="total-worth-history-timeframe">timeframe=</label><select id="total-worth-history-timeframe">
+	<option value="3600">3600</option>
+	<option value="86400" selected>86400</option>
+</select>&amp;<label for="total-worth-history-days">days=</label><select id="total-worth-history-days">
+	<option value="4">4</option>
+	<option value="7">7</option>
+	<option value="31">31</option>
+	<option value="91">91</option>
+	<option value="181" selected>181</option>
+</select>
+</pre>
+<div id="total_worth_history"></div>
+
+<hr id="h_level_histogram"/><h3>Level Distribution <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/analytics/level-histogram
+
+Example: GET /services/analytics/level-histogram
+</pre>
+<div id="level_histogram"></div>
+
+<hr id="h_class_histogram"/><h3>Class Distribution <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/analytics/class-histogram
+Query Params:
+	level_threshold: integer, range [1,20], default: 10
+
+Example: GET /services/analytics/class-histogram
+</pre>
+<pre id="class_distribution"></pre>
+<div id="class_histogram"></div>
+
+<hr/>
+
+<p>&copy; 2016 - 2017 <a href="/">L2C1x1</a>. All rights reserved.</p>
+
+</body>
+<script type="text/javascript">
+jQuery(function() {
+	// define global colors
+	Highcharts.setOptions({
+		colors: [
+			'#7cb5ec',
+			'#90ed7d',
+			'#f7a35c',
+			'#8085e9',
+			'#f15c80',
+			'#e4d354',
+			'#2b908f',
+			'#f45b5b',
+			'#91e8e1',
+			'#434348'
+		]
+	});
+
+
+	var online_count_days = jQuery("#online-count-days");
+	var active_players_days = jQuery("#active-players-days");
+	var online_history_days = jQuery("#online-history-days");
+	var online_history_timeframe = jQuery("#online-history-timeframe");
+	var total_worth_history_days = jQuery("#total-worth-history-days");
+	var total_worth_history_timeframe = jQuery("#total-worth-history-timeframe");
+
+	online_count_days.bind("change", function(e) {
+		display_online_count(this.value);
+	});
+	active_players_days.bind("change", function(e) {
+		list_active_players(this.value);
+	});
+	online_history_days.bind("change", function(e) {
+		draw_online_history();
+	});
+	online_history_timeframe.bind("change", function(e) {
+		online_history_days.val(this.value == 3600? 4: 91);
+		draw_online_history();
+	});
+	total_worth_history_days.bind("change", function(e) {
+		draw_total_worth_history();
+	});
+	total_worth_history_timeframe.bind("change", function(e) {
+		total_worth_history_days.val(this.value == 3600? 4: 91);
+		draw_total_worth_history();
+	});
+
+	display_online_count();
+	list_active_players();
+	display_server_stats();
+	display_PTS_status();
+	draw_online_history();
+	draw_total_worth_history();
+	draw_level_histogram();
+	draw_class_histogram();
+
+	var hover_fn = function(e) {if(!("ontouchstart" in window)) {jQuery(this).toggleClass("fa-spin");}};
+
+	jQuery("#h_online_count ~ h3:first > i.fa-refresh").bind({click: function(e) {display_online_count();}, hover: hover_fn});
+	jQuery("#h_active_players_list ~ h3:first > i.fa-refresh").bind({click: function(e) {list_active_players();}, hover: hover_fn});
+	jQuery("#h_server_stats ~ h3:first > i.fa-refresh").bind({click: function(e) {display_server_stats();}, hover: hover_fn});
+	jQuery("#h_pts_status ~ h3:first > i.fa-refresh").bind({click: function(e) {display_PTS_status();}, hover: hover_fn});
+	jQuery("#h_online_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_online_history();}, hover: hover_fn});
+	jQuery("#h_total_worth_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_total_worth_history();}, hover: hover_fn});
+	jQuery("#h_level_histogram ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_level_histogram();}, hover: hover_fn});
+	jQuery("#h_class_histogram ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_class_histogram();}, hover: hover_fn});
+
+
+	/********** online count **********/
+	function display_online_count(days) {
+		if(!days) {
+			days = online_count_days.val();
+		}
+		jQuery.getJSON(
+				'/services/misc/online-count?days=' + days,
+				null,
+				function(data) {
+					var html = "Online Count:\t" + data.onlineCount;
+					html += "\nIP Count:\t" + data.ipCount;
+					jQuery("#online_count").html(html);
+				}
+		);
+	}
+
+	/********** active players list **********/
+	function list_active_players(days) {
+		if(!days) {
+			days = active_players_days.val();
+		}
+		jQuery.getJSON(
+				'/services/misc/list-active-players?days=' + days,
+				null,
+				function(data) {
+					var html = "Count: " + data.count;
+					if(data.count > 0) {
+						html += "\nCharacters:\n\t";
+						html += data.nicknames.join("\n\t");
+					}
+					jQuery("#active_players_list").html(html);
+				}
+		);
+	}
+
+	/********** server statistics **********/
+	function display_server_stats() {
+		jQuery.getJSON(
+				'/services/misc/server-stats',
+				null,
+				function(data) {
+					var html = "total accounts: \t" + data.totalAccounts;
+					html += "\nactive accounts:\t" + data.activeAccounts;
+					html += "\ntotal characters:\t" + data.totalCharacters;
+					html += "\nactive characters:\t" + data.activeCharacters;
+					html += "\ndeleted characters:\t" + data.deletedCharacters;
+					html += "\nhigh level characters:\t" + data.highLevelCharacters;
+					html += "\nmid level characters:\t" + data.midLevelCharacters;
+					html += "\nlow level characters:\t" + data.lowLevelCharacters;
+					html += "\ncurrent maximum level:\t" + data.maximumLevel;
+					html += "\ntotal (sum) use time:\t" + (data.totalUseTime / 31556952 | 0) + " years";
+					html += "\nactive use time:\t" + (data.activeUseTime / 31556952 | 0) + " years";
+					html += "\nhigh level use time:\t" + (data.highUseTime / 31556952 | 0) + " years";
+					html += "\nmaximum use time:\t" + (data.maxUseTime / 2592000 | 0) + " months";
+					html += "\naverage use time:\t" + (data.avgUseTime / 86400 | 0) + " days";
+					jQuery("#server_stats").html(html);
+				}
+		);
+	}
+
+	/********** PTS status **********/
+	function display_PTS_status() {
+		jQuery.getJSON(
+				'/services/misc/pts-status',
+				null,
+				function(data) {
+					var html = "auth: \t" + (data.auth? "online": "offline");
+					html += "\nheaven:\t" + (data.heaven? "online": "offline");
+					html += "\nhell:\t" + (data.hell? "online": "offline");
+					html += "\nchaos:\t" + (data.chaos? "online": "offline");
+					jQuery("#pts_status").html(html);
+				}
+		);
+	}
+
+	/********** online history **********/
+	function draw_online_history(timeframe, days) {
+		if(!timeframe) {
+			timeframe = online_history_timeframe.val();
+		}
+		if(!days) {
+			days = online_history_days.val();
+		}
+		jQuery.getJSON(
+				'/services/analytics/online-history?timeframe=' + timeframe + '&days=' + days,
+				function(data) {
+					for(var i = 0; i < data.timestamps.length; i++) {
+						var date = new Date(data.timestamps[i]);
+						data.timestamps[i] = timeframe == 3600?
+							getDayName(date.getDay()) + ", " + date.getHours() + ":00":
+							getMonthName(date.getMonth()) + ", " + date.getDate();
+					}
+
+					jQuery('#online_history').highcharts({
+						chart: {
+							type: 'area' // 'column'
+						},
+						title: {
+							text: 'Online Count'
+						},
+						xAxis: {
+							categories: data.timestamps,
+							labels: {
+								rotation: -90,
+								style: {
+									fontSize: '1em'
+								}
+							}
+						},
+						yAxis: {
+							title: {
+								text: 'Number of Players'
+							},
+							min: 0,
+							allowDecimals: false
+						},
+						legend: {
+							enabled: false
+						},
+						plotOptions: {
+							column: {
+								pointPadding: 0,
+								groupPadding: 0,
+								borderWidth: 0,
+								grouping: false,
+								shadow: true
+							},
+							series: {
+								fillOpacity: 0.1
+							}
+						},
+						tooltip: {
+							headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+							pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+							'<td style="padding:0"><b>{point.y}</b></td></tr>',
+							footerFormat: '</table>',
+							shared: true,
+							useHTML: true
+						},
+						series: [{
+							name: 'Online Count',
+							data: data.onlineCountValues
+						},{
+							name: 'IP Count',
+							data: data.ipCountValues
+						}]
+					});
+				}
+		);
+	}
+
+
+	/********** worth history **********/
+	function draw_total_worth_history(timeframe, days) {
+		if(!timeframe) {
+			timeframe = total_worth_history_timeframe.val();
+		}
+		if(!days) {
+			days = total_worth_history_days.val();
+		}
+		jQuery.getJSON(
+				'/services/analytics/worth-history?timeframe=' + timeframe + '&days=' + days,
+				function(data) {
+					for(var i = 0; i < data.timestamps.length; i++) {
+						var date = new Date(data.timestamps[i]);
+						if(timeframe == 3600) {
+							data.timestamps[i] = getDayName(date.getDay()) + ", " + date.getHours() + ":00";
+						}
+						else {
+							data.timestamps[i] = getMonthName(date.getMonth()) + ", " + date.getDate();
+						}
+					}
+
+					jQuery('#total_worth_history').highcharts({
+						chart: {
+							type: 'area'
+						},
+						title: {
+							text: 'Market Volume'
+						},
+						xAxis: {
+							categories: data.timestamps,
+							labels: {
+								rotation: -90,
+								style: {
+									fontSize: '1em'
+								}
+							}
+						},
+						yAxis: {
+							title: {
+								text: 'Adena Volume'
+							},
+							min: 0,
+							allowDecimals: false
+						},
+						legend: {
+							enabled: false
+						},
+						plotOptions: {
+							series: {
+								fillOpacity: 0.1
+							}
+						},
+						tooltip: {
+							headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+							pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+							'<td style="padding:0"><b>{point.y}</b></td></tr>',
+							footerFormat: '</table>',
+							shared: true,
+							useHTML: true
+						},
+						series: [{
+							name: 'Market Volume',
+							data: data.worthValues
+						}, {
+							name: 'Adena Volume',
+							data: data.adenaValues
+						}]
+					});
+				}
+		);
+	}
+
+
+	/********** level histogram **********/
+	function draw_level_histogram() {
+		jQuery.getJSON(
+				'/services/analytics/level-histogram',
+				function(data) {
+					jQuery('#level_histogram').highcharts({
+						chart: {
+							type: 'column'
+						},
+						title: {
+							text: 'Level Distribution'
+						},
+						xAxis: {
+							title: {
+								text: 'Level'
+							},
+							labels: {
+								rotation: -90,
+								style: {
+									fontSize: '1em'
+								},
+								formatter: function() {
+									return this.value + 1;
+								}
+							},
+							tickInterval: 1,
+							min: 0
+						},
+						yAxis: {
+							title: {
+								text: 'Number of Characters'
+							},
+							min: 0,
+							allowDecimals: false
+						},
+						legend: {
+							enabled: false
+						},
+						plotOptions: {
+							column: {
+								pointPadding: 0,
+								groupPadding: 0,
+								borderWidth: 0,
+								grouping: false,
+								shadow: true
+							}
+						},
+						tooltip: {
+							formatter: function() {
+								return '<b>' + this.y + '</b> characters<br/>of level <b>' + (this.x + 1) + '</b>';
+							},
+							shared: true,
+							useHTML: true
+						},
+						series: [{
+							data: data.values
+						}]
+					});
+				}
+		);
+	}
+
+
+	/********** class histogram **********/
+	function draw_class_histogram() {
+		jQuery.getJSON(
+				'/services/analytics/class-histogram',
+				function(data) {
+					// 1. display as text
+					var html = "<table border><caption>Class Distribution (Level > 10)</caption><tr>";
+					var tbl_header = "<th>Class Name</th><th>N</th>";
+
+					var columns = 4;
+					for(var k = 0; k < columns; k++) {
+						html += tbl_header;
+					}
+					html += "</tr>";
+					var page_sz = Math.ceil(data.values.length / columns);
+					for(var i = 0; i < page_sz; i++) {
+						html += "<tr>";
+						for(var j = 0; j < columns; j++) {
+							var n = i + j * page_sz;
+							if(n < data.values.length) {
+								html += "<td>" + data.classNames[n] + "</td><td>" + data.values[n] + "</td>";
+							}
+							else {
+								html += "<td></td><td></td>";
+							}
+						}
+						html += "</tr>";
+					}
+					html += "</table>";
+					jQuery('#class_distribution').html(html);
+
+					// 2. display as histogram
+					jQuery('#class_histogram').highcharts({
+						chart: {
+							type: 'column'
+						},
+						title: {
+							text: 'Class Distribution (Level > 10)'
+						},
+						xAxis: {
+							labels: {
+								rotation: -90,
+								style: {
+									fontSize: '1em'
+								}
+							},
+							categories: data.classNames
+						},
+						yAxis: {
+							title: {
+								text: 'Number of Characters'
+							},
+							min: 0,
+							allowDecimals: false
+						},
+						legend: {
+							enabled: false
+						},
+						plotOptions: {
+							column: {
+								pointPadding: 0,
+								groupPadding: 0,
+								borderWidth: 0,
+								grouping: false,
+								shadow: true
+							}
+						},
+						tooltip: {
+							formatter: function() {
+								return '<b>' + this.y + '</b> ' + this.x + '(s)';
+							},
+							shared: true,
+							useHTML: true
+						},
+						series: [{
+							data: data.values
+						}]
+					});
+				}
+		);
+	}
+
+});
+
+
+
+
+function getDayName(index) {
+	if(index == 0) {
+		return "Sun";
+	}
+	if(index == 1) {
+		return "Mon";
+	}
+	if(index == 2) {
+		return "Tue";
+	}
+	if(index == 3) {
+		return "Wed";
+	}
+	if(index == 4) {
+		return "Thu";
+	}
+	if(index == 5) {
+		return "Fri";
+	}
+	if(index == 6) {
+		return "Sat";
+	}
+	return "Unknown";
+}
+
+function getMonthName(index) {
+	if(index == 0) {
+		return "Jan";
+	}
+	if(index == 1) {
+		return "Feb";
+	}
+	if(index == 2) {
+		return "Mar";
+	}
+	if(index == 3) {
+		return "Apr";
+	}
+	if(index == 4) {
+		return "May";
+	}
+	if(index == 5) {
+		return "Jun";
+	}
+	if(index == 6) {
+		return "Jul";
+	}
+	if(index == 7) {
+		return "Aug";
+	}
+	if(index == 8) {
+		return "Sep";
+	}
+	if(index == 9) {
+		return "Oct";
+	}
+	if(index == 10) {
+		return "Nov";
+	}
+	if(index == 11) {
+		return "Dec";
+	}
+	return "Unknown";
+}
+</script>
+
+<!-- GOOGLE ANALYTICS -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-76473580-1', 'auto');
+ga('send', 'pageview');
+</script>
+</html>
