@@ -81,45 +81,45 @@ Method:	GET
 URL:	/services/analytics/online-history
 Query Params:
 	timeframe: integer, values 3600/86400, default: 3600
-	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	days: integer, range [1,730]
 	from: date, format yyyy-mm-dd, default: to - days
 	to: date, format yyyy-mm-dd, default: today
 
 Example: GET /services/analytics/online-history?<label for="online-history-timeframe">timeframe=</label><select id="online-history-timeframe">
-	<option value="3600">3600</option>
-	<option value="86400" selected>86400</option>
+	<option value="3600">1 hour</option>
+	<option value="86400" selected>1 day</option>
 </select>&amp;<label for="online-history-days">days=</label><select id="online-history-days">
-	<option value="4">4</option>
-	<option value="7">7</option>
-	<option value="31">31</option>
-	<option value="91">91</option>
-	<option value="181" selected>181</option>
+	<option value="14">14</option>
+	<option value="84">84</option>
+	<option value="182">182</option>
+	<option value="365">365</option>
+	<option value="730" selected>730</option>
 </select>
 </pre>
 <div id="online_history"></div>
 
-<hr id="h_total_worth_history"/><h3>Market Volume <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<hr id="h_market_cap_history"/><h3>Market Capitalization <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
 <pre>
 Method:	GET
-URL:	/services/analytics/worth-history
+URL:	/services/analytics/cap-history
 Query Params:
 	timeframe: integer, values 3600/86400, default: 3600
-	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	days: integer, range [1,730]
 	from: date, format yyyy-mm-dd, default: to - days
 	to: date, format yyyy-mm-dd, default: today
 
-Example: GET /services/analytics/worth-history?<label for="total-worth-history-timeframe">timeframe=</label><select id="total-worth-history-timeframe">
-	<option value="3600">3600</option>
-	<option value="86400" selected>86400</option>
-</select>&amp;<label for="total-worth-history-days">days=</label><select id="total-worth-history-days">
-	<option value="4">4</option>
-	<option value="7">7</option>
-	<option value="31">31</option>
-	<option value="91">91</option>
-	<option value="181" selected>181</option>
+Example: GET /services/analytics/cap-history?<label for="market-cap-history-timeframe">timeframe=</label><select id="market-cap-history-timeframe">
+	<option value="3600">1 hour</option>
+	<option value="86400" selected>1 day</option>
+</select>&amp;<label for="market-cap-history-days">days=</label><select id="market-cap-history-days">
+	<option value="14">14</option>
+	<option value="84">84</option>
+	<option value="182">182</option>
+	<option value="365">365</option>
+	<option value="730" selected>730</option>
 </select>
 </pre>
-<div id="total_worth_history"></div>
+<div id="market_cap_history"></div>
 
 <hr id="h_level_histogram"/><h3>Level Distribution <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
 <pre>
@@ -142,9 +142,10 @@ Example: GET /services/analytics/class-histogram
 <pre id="class_distribution"></pre>
 <div id="class_histogram"></div>
 
+
 <hr/>
 
-<p>&copy; 2016 - 2017 <a href="/">L2C1x1</a>. All rights reserved.</p>
+<p>&copy; 2016 - 2018 <a href="/">L2C1x1</a>. All rights reserved.</p>
 
 </body>
 <script type="text/javascript">
@@ -170,8 +171,8 @@ jQuery(function() {
 	var active_players_days = jQuery("#active-players-days");
 	var online_history_days = jQuery("#online-history-days");
 	var online_history_timeframe = jQuery("#online-history-timeframe");
-	var total_worth_history_days = jQuery("#total-worth-history-days");
-	var total_worth_history_timeframe = jQuery("#total-worth-history-timeframe");
+	var market_cap_history_days = jQuery("#market-cap-history-days");
+	var market_cap_history_timeframe = jQuery("#market-cap-history-timeframe");
 
 	online_count_days.bind("change", function(e) {
 		display_online_count(this.value);
@@ -183,15 +184,15 @@ jQuery(function() {
 		draw_online_history();
 	});
 	online_history_timeframe.bind("change", function(e) {
-		online_history_days.val(this.value == 3600? 4: 91);
+		online_history_days.val(this.value == 3600? 84: 730);
 		draw_online_history();
 	});
-	total_worth_history_days.bind("change", function(e) {
-		draw_total_worth_history();
+	market_cap_history_days.bind("change", function(e) {
+		draw_market_cap_history();
 	});
-	total_worth_history_timeframe.bind("change", function(e) {
-		total_worth_history_days.val(this.value == 3600? 4: 91);
-		draw_total_worth_history();
+	market_cap_history_timeframe.bind("change", function(e) {
+		market_cap_history_days.val(this.value == 3600? 84: 730);
+		draw_market_cap_history();
 	});
 
 	display_online_count();
@@ -199,7 +200,7 @@ jQuery(function() {
 	display_server_stats();
 	display_PTS_status();
 	draw_online_history();
-	draw_total_worth_history();
+	draw_market_cap_history();
 	draw_level_histogram();
 	draw_class_histogram();
 
@@ -210,7 +211,7 @@ jQuery(function() {
 	jQuery("#h_server_stats ~ h3:first > i.fa-refresh").bind({click: function(e) {display_server_stats();}, hover: hover_fn});
 	jQuery("#h_pts_status ~ h3:first > i.fa-refresh").bind({click: function(e) {display_PTS_status();}, hover: hover_fn});
 	jQuery("#h_online_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_online_history();}, hover: hover_fn});
-	jQuery("#h_total_worth_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_total_worth_history();}, hover: hover_fn});
+	jQuery("#h_market_cap_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_market_cap_history();}, hover: hover_fn});
 	jQuery("#h_level_histogram ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_level_histogram();}, hover: hover_fn});
 	jQuery("#h_class_histogram ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_class_histogram();}, hover: hover_fn});
 
@@ -258,18 +259,22 @@ jQuery(function() {
 				function(data) {
 					var html = "total accounts: \t" + data.totalAccounts;
 					html += "\nactive accounts:\t" + data.activeAccounts;
+					html += "\nnew accounts:\t\t" + data.newAccounts;
 					html += "\ntotal characters:\t" + data.totalCharacters;
 					html += "\nactive characters:\t" + data.activeCharacters;
+					html += "\nnew characters: \t" + data.newCharacters;
 					html += "\ndeleted characters:\t" + data.deletedCharacters;
 					html += "\nhigh level characters:\t" + data.highLevelCharacters;
 					html += "\nmid level characters:\t" + data.midLevelCharacters;
 					html += "\nlow level characters:\t" + data.lowLevelCharacters;
 					html += "\ncurrent maximum level:\t" + data.maximumLevel;
 					html += "\ntotal (sum) use time:\t" + (data.totalUseTime / 31556952 | 0) + " years";
-					html += "\nactive use time:\t" + (data.activeUseTime / 31556952 | 0) + " years";
+					html += "\nactive use time:\t" + (data.activeUseTime / 2592000 | 0) + " months";
 					html += "\nhigh level use time:\t" + (data.highUseTime / 31556952 | 0) + " years";
 					html += "\nmaximum use time:\t" + (data.maxUseTime / 2592000 | 0) + " months";
 					html += "\naverage use time:\t" + (data.avgUseTime / 86400 | 0) + " days";
+					html += "\ntotal adena supply:\t" + data.adenaSupply;
+					html += "\nmarket capitalization:\t" + data.marketCap;
 					jQuery("#server_stats").html(html);
 				}
 		);
@@ -310,6 +315,7 @@ jQuery(function() {
 
 					jQuery('#online_history').highcharts({
 						chart: {
+							zoomType: 'x',
 							type: 'area' // 'column'
 						},
 						title: {
@@ -367,16 +373,16 @@ jQuery(function() {
 	}
 
 
-	/********** worth history **********/
-	function draw_total_worth_history(timeframe, days) {
+	/********** capitalization history **********/
+	function draw_market_cap_history(timeframe, days) {
 		if(!timeframe) {
-			timeframe = total_worth_history_timeframe.val();
+			timeframe = market_cap_history_timeframe.val();
 		}
 		if(!days) {
-			days = total_worth_history_days.val();
+			days = market_cap_history_days.val();
 		}
 		jQuery.getJSON(
-				'/services/analytics/worth-history?timeframe=' + timeframe + '&days=' + days,
+				'/services/analytics/cap-history?timeframe=' + timeframe + '&days=' + days,
 				function(data) {
 					for(var i = 0; i < data.timestamps.length; i++) {
 						var date = new Date(data.timestamps[i]);
@@ -388,12 +394,13 @@ jQuery(function() {
 						}
 					}
 
-					jQuery('#total_worth_history').highcharts({
+					jQuery('#market_cap_history').highcharts({
 						chart: {
+							zoomType: 'x',
 							type: 'area'
 						},
 						title: {
-							text: 'Market Volume'
+							text: 'Market Capitalization'
 						},
 						xAxis: {
 							categories: data.timestamps,
@@ -406,7 +413,7 @@ jQuery(function() {
 						},
 						yAxis: {
 							title: {
-								text: 'Adena Volume'
+								text: 'Value (adena)'
 							},
 							min: 0,
 							allowDecimals: false
@@ -429,7 +436,7 @@ jQuery(function() {
 						},
 						series: [{
 							name: 'Market Volume',
-							data: data.worthValues
+							data: data.capValues
 						}, {
 							name: 'Adena Volume',
 							data: data.adenaValues
@@ -512,7 +519,10 @@ jQuery(function() {
 					var html = "<table border><caption>Class Distribution (Level > 10)</caption><tr>";
 					var tbl_header = "<th>Class Name</th><th>N</th>";
 
-					var columns = 4;
+					var columns = Math.floor(document.getElementById("class_distribution").scrollWidth / 160);
+					if(!columns) {
+						columns = 1;
+					}
 					for(var k = 0; k < columns; k++) {
 						html += tbl_header;
 					}

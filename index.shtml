@@ -18,7 +18,7 @@
 </head>
 <body>
 <ul class="menu">
-<li class="gm">Welcome to the L2 C1 x1 fan-club<span class="wide-screen"> and our <span title="Public Test Server">PTS</span> landing page</span>!</li>
+<li class="gm">Welcome to the L2C1x1 fan-club<span class="wide-screen"> and our <span title="Public Test Server">PTS</span> landing page</span>!</li>
 <!--<li class="gm">Announcement: If you experience a login problem, please contact us at <a class="party" href="mailto:l2c1x1fc@gmail.com?subject=login problem">l2c1x1fc@gmail.com</a></li>-->
 
 
@@ -69,7 +69,7 @@
 
 <li><a href="#spec" title="precise description of what is inside">&rarr; server specification</a>
 <div id="spec" class="collapse">
-	Lineage II Chronicle 1: Harbingers of War (L2 C1 x1), as described in<br/>
+	Lineage II Chronicle 1: Harbingers of War (L2C1x1), as described in<br/>
 	<a href="docs/prima_guide_c1.pdf" title="pdf document" target="_blank">&rarr; PRIMA<sup>&reg;</sup> <small>OFFICIAL GAME GUIDE</small>: Lineage II Chronicle 1 - Harbingers of War</a>, including<br/>
 	<a href="docs/prima_guide_errata.pdf" title="pdf document" target="_blank">&rarr; Lineage II: Chronicle I, the Harbingers of War Errata</a>, including<br/>
 	<a href="https://bitbucket.org/t911/pts/issues?status=new&status=open&kind=bug" title="external link" target="_blank">&rarr; Known Issues (listed on Bitbucket)</a><br/>
@@ -91,7 +91,15 @@
 
 <ul id="menu_dev" class="menu">
 <li class="gm">For Developers</li>
-<li><a href="docs/c1_gm_commands.pdf" title="pdf document" target="_blank">&rarr; C1 GM commands</a></li>
+<li><a href="docs/prima_guide_c1_p178.pdf" title="pdf document" target="_blank">&rarr; Teleport Zones</a></li>
+
+<li><a href="docs/c1_gm_commands.pdf" title="pdf document" target="_blank">&rarr; GM commands</a></li>
+
+<li><a href="#gm-levels">&rarr; GM Levels</a>
+<div id="gm-levels" class="collapse">
+	<!--#include file="gm-levels.html" -->
+</div>
+</li>
 
 <li><a href="#rest-api">&rarr; RESTful API</a>
 <div id="rest-api" class="collapse">
@@ -102,13 +110,14 @@
 
 <li><a href="#server_files">&rarr; server files</a>
 <div id="server_files" class="collapse">
-	<p>Here you can get the PTS itself. This is exactly what is currently running on our private server.</p>
+	<p>Here you can get the PTS itself. This is exactly what is currently running on our private servers.</p>
 	<p><a href="https://bitbucket.org/t911/pts" title="external link" target="_blank">&#8623; Current version on BitBucket &#8623;</a></p>
 	<ul class="menu">
 		<li><a href="server/1.0.0.1.7Z">&searr; v1.0.0.1 (1.0.0.1.7Z, 95.5MB, 06/04/2016)</a></li>
 		<li><a href="server/1.0.0.2.7Z">&searr; v1.0.0.2 (1.0.0.2.7Z, 20.9KB, 07/04/2016)</a></li>
 		<li><a href="server/1.0.0.3.7Z">&searr; v1.0.0.3 (1.0.0.3.7Z, 399KB, 25/04/2016)</a></li>
 		<li><a href="server/1.0.0.4.7Z">&searr; v1.0.0.4 (1.0.0.4.7Z, 246KB, 25/04/2016)</a></li>
+		<li><a href="server/1.0.0.5.7Z">&searr; v1.0.0.5 (1.0.0.5.7Z, 861B, 10/05/2016)</a></li>
 	</ul>
 </div></li>
 </ul>

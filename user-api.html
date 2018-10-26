@@ -19,6 +19,8 @@
 	<script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
 	<link rel="stylesheet" type="text/css" href="https://www.highcharts.com/samples/static/highslide.css"/>
 
+	<!-- Font Awesome, http://fontawesome.io/ -->
+	<script src="https://use.fontawesome.com/8e28eda7e4.js"></script>
 </head>
 <body>
 <h1>User API</h1>
@@ -29,7 +31,7 @@
 	<label for="auth">Authorization: </label>Basic <input type="password" id="auth" placeholder="username:password">
 </fieldset>
 
-<hr/><h3>Extended Active Players List</h3><hr/>
+<hr id="h_active_players_list"/><h3>Extended Active Players List <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
 <pre>
 Method:	GET
 URL:	/services/misc/list-active-players
@@ -44,37 +46,58 @@ Example: GET /services/misc/list-active-players?<label for="active-players-days"
 </pre>
 <pre id="active_players_list"></pre>
 
-<hr/><h3>Extended Worth History</h3><hr/>
+<hr id="h_cap_history"/><h3>Character Capitalization <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
 <pre>
 Method:	GET
-URL:	/services/analytics/worth-history
+URL:	/services/analytics/cap-history
 Query Params:
 	timeframe: integer, values 3600/86400, default: 3600
-	days: integer, range [1,7] for timeframe 3600, range [7,181] for timeframe 86400
+	days: integer, range [1,730]
 	from: date, format yyyy-mm-dd, default: to - days
 	to: date, format yyyy-mm-dd, default: today
 	nicknames: array of nicknames to return data for (maximum 10); nicknames=nick1&nicknames=nick2&...
 	align: boolean, values true/false
 
-Example: GET /services/analytics/worth-history
-	?<label for="worth-history-timeframe">timeframe=</label><select id="worth-history-timeframe">
-	<option value="3600">3600</option>
-	<option value="86400" selected>86400</option>
-</select>&amp;<label for="worth-history-days">days=</label><select id="worth-history-days">
-	<option value="4">4</option>
-	<option value="7">7</option>
-	<option value="31">31</option>
-	<option value="91">91</option>
-	<option value="181" selected>181</option>
+Example: GET /services/analytics/cap-history
+	?<label for="cap-history-timeframe">timeframe=</label><select id="cap-history-timeframe">
+	<option value="3600">1 hour</option>
+	<option value="86400" selected>1 day</option>
+</select>&amp;<label for="cap-history-days">days=</label><select id="cap-history-days">
+	<option value="14">14</option>
+	<option value="84">84</option>
+	<option value="182">182</option>
+	<option value="365">365</option>
+	<option value="730" selected>730</option>
 </select>
-	&<label for="worth-history-nicknames">nicknames=</label><input type="text"
-	placeholder="comma-separated list" id="worth-history-nicknames" style="width: 480px;"/>
+	&<label for="cap-history-nicknames">nicknames=</label><input type="text"
+	placeholder="comma-separated list" id="cap-history-nicknames" style="width: 480px;"/>
 </pre>
-<div id="worth_history"></div>
+<div id="cap_history"></div>
+
+<hr id="h_locations"/><h3>Characters on Map <i class="fa fa-refresh" aria-hidden="true" title="refresh"></i></h3><hr/>
+<pre>
+Method:	GET
+URL:	/services/loc/
+Query Params:
+	days: integer, default: -1 (not set); user roles restrictions apply
+
+Example: GET /services/loc/?<label for="loc-days">days=</label><select id="loc-days">
+	<option value="-1" selected>&dash;</option>
+	<option value="1">1</option>
+	<option value="7">7</option>
+	<option value="28">28</option>
+	<option value="84">84</option>
+	<option value="182">182</option>
+	<option value="365">365</option>
+	<option value="730">730</option>
+</select>
+</pre>
+<div id="locations"></div>
+
 
 <hr/>
 
-<p>&copy; 2016 - 2017 <a href="/">L2C1x1</a>. All rights reserved.</p>
+<p>&copy; 2016 - 2018 <a href="/">L2C1x1</a>. All rights reserved.</p>
 
 </body>
 <script type="text/javascript">
@@ -106,45 +129,54 @@ jQuery(function() {
 
 	var active_players_days = jQuery("#active-players-days");
 	active_players_days.bind("change", function(e) {
-		listActivePlayers(this.value);
+		list_active_players(this.value);
 	});
 
-	var worth_history_days = jQuery("#worth-history-days");
-	var worth_history_timeframe = jQuery("#worth-history-timeframe");
-	var worth_history_nicknames = jQuery("#worth-history-nicknames");
-	worth_history_days.bind("change", function(e) {
-		drawWorthHistory();
+	var cap_history_days = jQuery("#cap-history-days");
+	var cap_history_timeframe = jQuery("#cap-history-timeframe");
+	var cap_history_nicknames = jQuery("#cap-history-nicknames");
+	cap_history_days.bind("change", function(e) {
+		draw_cap_history();
 	});
-	worth_history_timeframe.bind("change", function(e) {
-		worth_history_days.val(this.value == 3600? 4: 91);
-		drawWorthHistory();
+	cap_history_timeframe.bind("change", function(e) {
+		cap_history_days.val(this.value == 3600? 84: 730);
+		draw_cap_history();
 	});
-	worth_history_nicknames.bind("change", function(e) {
-		document.cookie = "worth_history_nicknames=" + this.value;
-		drawWorthHistory();
+	cap_history_nicknames.bind("change", function(e) {
+		document.cookie = "cap_history_nicknames=" + this.value;
+		draw_cap_history();
+	});
+
+	var loc_days = jQuery("#loc-days");
+	loc_days.bind("change", function(e) {
+		draw_loc_distribution(this.value);
 	});
 
 	// load values from cookies
 	auth.val(read_cookie("gm-auth"));
-	worth_history_nicknames.val(read_cookie("worth_history_nicknames"));
+	cap_history_nicknames.val(read_cookie("cap_history_nicknames"));
 
 	// display initial data
-	listActivePlayers();
-	if(auth.val() && worth_history_nicknames.val()) {
-		drawWorthHistory();
+	list_active_players();
+	if(auth.val() && cap_history_nicknames.val()) {
+		draw_cap_history();
 	}
+	draw_loc_distribution();
+
+	var hover_fn = function(e) {if(!("ontouchstart" in window)) {jQuery(this).toggleClass("fa-spin");}};
+
+	jQuery("#h_active_players_list ~ h3:first > i.fa-refresh").bind({click: function(e) {list_active_players();}, hover: hover_fn});
+	jQuery("#h_cap_history ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_cap_history();}, hover: hover_fn});
+	jQuery("#h_locations ~ h3:first > i.fa-refresh").bind({click: function(e) {draw_loc_distribution();}, hover: hover_fn});
 
 	/********** active players list **********/
-	function listActivePlayers(days) {
+	function list_active_players(days) {
 		if(!days) {
 			days = active_players_days.val();
 		}
 		jQuery.ajax({
 			beforeSend: function(xhr) {
-				var auth_header = auth.val();
-				if(auth_header) {
-					xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth_header));
-				}
+				xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth.val()));
 			},
 			dataType: "json",
 			url: resolveAbsoluteURL('/services/misc/list-active-players'),
@@ -183,16 +215,16 @@ jQuery(function() {
 		});
 	}
 
-	/********** worth history **********/
-	function drawWorthHistory(timeframe, days, nicknames) {
+	/********** capitalization history **********/
+	function draw_cap_history(timeframe, days, nicknames) {
 		if(!timeframe) {
-			timeframe = worth_history_timeframe.val();
+			timeframe = cap_history_timeframe.val();
 		}
 		if(!days) {
-			days = worth_history_days.val();
+			days = cap_history_days.val();
 		}
 		if(!nicknames) {
-			nicknames = worth_history_nicknames.val().split(",");
+			nicknames = cap_history_nicknames.val().split(",");
 		}
 		jQuery.ajax({
 			traditional: true,
@@ -200,7 +232,7 @@ jQuery(function() {
 				xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth.val()));
 			},
 			dataType: "json",
-			url: resolveAbsoluteURL('/services/analytics/worth-history'),
+			url: resolveAbsoluteURL('/services/analytics/cap-history'),
 			data: {
 				timeframe: timeframe,
 				days: days,
@@ -219,22 +251,26 @@ jQuery(function() {
 
 				var series = [];
 
-				for(var charName in data.charWorthHistories) {
-					if(data.charWorthHistories.hasOwnProperty(charName)) {
+				for(var charName in data.charCapHistories) {
+					if(data.charCapHistories.hasOwnProperty(charName)) {
 						series.push({
-							name: charName + ' Worth',
-							data: data.charWorthHistories[charName].worthValues
+							name: charName + ' Capitalization',
+							data: data.charCapHistories[charName].capValues
 						});
 						series.push({
 							name: charName + ' Adena',
-							data: data.charWorthHistories[charName].adenaValues
+							data: data.charCapHistories[charName].adenaValues
 						});
 					}
 				}
 
-				jQuery('#worth_history').highcharts({
+				jQuery('#cap_history').highcharts({
+					chart: {
+						zoomType: 'x',
+						type: 'area'
+					},
 					title: {
-						text: 'Worth History'
+						text: 'Character Capitalization'
 					},
 					xAxis: {
 						categories: data.timestamps,
@@ -247,13 +283,18 @@ jQuery(function() {
 					},
 					yAxis: {
 						title: {
-							text: 'Adena Worth Value'
+							text: 'Value (adena)'
 						},
 						min: 0,
 						allowDecimals: false
 					},
 					legend: {
 						enabled: false
+					},
+					plotOptions: {
+						series: {
+							fillOpacity: 0.1
+						}
 					},
 					tooltip: {
 						headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
@@ -268,6 +309,106 @@ jQuery(function() {
 			}
 		});
 	}
+
+	/********** location distribution **********/
+	function draw_loc_distribution(days) {
+		if(!days) {
+			days = loc_days.val();
+		}
+
+		// full area: 1642 x 2460
+		var bw = 1642; // base width
+		var w = document.getElementById("locations").scrollWidth;
+		w = !w? bw / 2: w > bw? bw: w;
+		var h = w * 2460 / bw;
+		// elmore: 1312 x 984
+		var ew = w * 1312 / bw; // elmore width
+		var eh = w *  984 / bw; // elmore height
+		var el = w * 330 / bw;  // elmore offset left
+		var et = w * (-165) / bw; // elmore offset right
+		// aden: 1642 x 1476
+		var aw = w * 1642 / bw; // aden width
+		var ah = w * 1476 / bw; // aden height
+		var al = 0; // aden offset left
+		var at = eh; // aden offset top
+		jQuery.ajax({
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader ("Authorization", "Basic " + btoa(auth.val()));
+			},
+			dataType: "json",
+			url: resolveAbsoluteURL('/services/loc/'),
+			data: {
+				days: days
+			},
+			success: function(data) {
+				jQuery('#locations').highcharts({
+					chart: {
+						type: 'scatter',
+						//zoomType: 'xy',
+						spacing: [0,0,0,0],
+						margin: [0,0,0,0],
+						width: w, // 1642
+						height: h, // 2460
+						events: {
+							load: function() {
+								this.renderer.image(
+										// left offset: 330
+										// top offset: -165
+										'/maps/ElmoreC1_Map.jpg', // 1312x984
+										el, et, ew, eh
+								).add();
+								this.renderer.image(
+										'/maps/AdenC1_Map.jpg', // 1642x1476
+										al, at, aw, ah
+								).add();
+							}
+						}
+					},
+					title: {
+						text: null
+					},
+					xAxis: {
+						visible: false,
+						maxPadding: 0,
+						minPadding: 0,
+						startOnTick: false,
+						endOnTick: false,
+						min: -131070,
+						max: 196578
+					},
+					yAxis: {
+						visible: false,
+						reversed: true,
+						maxPadding: 0,
+						minPadding: 0,
+						startOnTick: false,
+						endOnTick: false,
+						min: -229368,
+						max: 262070
+					},
+					legend: {
+						enabled: false
+					},
+					plotOptions: {
+						scatter: {
+							softThreshold: false,
+							marker: {
+								radius: 2
+							}
+						}
+					},
+					tooltip: {
+						enabled: false
+					},
+					series: [{
+						color: 'rgba(255, 95, 95, .4)',
+						data: data
+					}]
+				});
+			}
+		});
+	}
+
 });
 
 
