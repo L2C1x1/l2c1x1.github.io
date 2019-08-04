@@ -118,6 +118,8 @@ Example: GET /services/analytics/cap-history?<label for="market-cap-history-time
 	<option value="365">365</option>
 	<option value="730" selected>730</option>
 </select>
+
+<span style="color: red">Due to int overflow bug the data from <b>August 24, 2018</b> to <b>February 11, 2019</b> is unavailable.</span>
 </pre>
 <div id="market_cap_history"></div>
 
@@ -268,11 +270,11 @@ jQuery(function() {
 					html += "\nmid level characters:\t" + data.midLevelCharacters;
 					html += "\nlow level characters:\t" + data.lowLevelCharacters;
 					html += "\ncurrent maximum level:\t" + data.maximumLevel;
-					html += "\ntotal (sum) use time:\t" + (data.totalUseTime / 31556952 | 0) + " years";
-					html += "\nactive use time:\t" + (data.activeUseTime / 2592000 | 0) + " months";
-					html += "\nhigh level use time:\t" + (data.highUseTime / 31556952 | 0) + " years";
-					html += "\nmaximum use time:\t" + (data.maxUseTime / 2592000 | 0) + " months";
-					html += "\naverage use time:\t" + (data.avgUseTime / 86400 | 0) + " days";
+					html += "\ntotal (sum) use time:\t" + formatInterval(data.totalUseTime);
+					html += "\nactive use time:\t" + formatInterval(data.activeUseTime);
+					html += "\nhigh level use time:\t" + formatInterval(data.highUseTime);
+					html += "\nmaximum use time:\t" + formatInterval(data.maxUseTime);
+					html += "\naverage use time:\t" + formatInterval(data.avgUseTime);
 					html += "\ntotal adena supply:\t" + data.adenaSupply;
 					html += "\nmarket capitalization:\t" + data.marketCap;
 					jQuery("#server_stats").html(html);
@@ -599,6 +601,31 @@ jQuery(function() {
 
 
 
+
+function formatInterval(seconds) {
+	if(seconds == 0) {
+		return seconds;
+	}
+	if(seconds < 120) {
+		return seconds + " seconds";
+	}
+	if(seconds < 7200) {
+		return (seconds / 60 | 0) + " minutes";
+	}
+	if(seconds < 172800) {
+		return (seconds / 3600 | 0) + " hours";
+	}
+	if(seconds < 1209600) {
+		return (seconds / 86400 | 0) + " days";
+	}
+	if(seconds < 5184000) {
+		return (seconds / 604800 | 0) + " weeks";
+	}
+	if(seconds < 63072000) {
+		return (seconds / 2592000 | 0) + " months";
+	}
+	return (seconds / 31556952 | 0) + " years";
+}
 
 function getDayName(index) {
 	if(index == 0) {

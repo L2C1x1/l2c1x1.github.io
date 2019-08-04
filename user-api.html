@@ -316,17 +316,17 @@ jQuery(function() {
 			days = loc_days.val();
 		}
 
-		// full area: 1642 x 2460
+		// full area: 1642 x 2460 (10 x 15 blocks)
 		var bw = 1642; // base width
 		var w = document.getElementById("locations").scrollWidth;
 		w = !w? bw / 2: w > bw? bw: w;
 		var h = w * 2460 / bw;
-		// elmore: 1312 x 984
+		// elmore: 1312 x 984 (8 x 6 blocks, but top block not in use)
 		var ew = w * 1312 / bw; // elmore width
 		var eh = w *  984 / bw; // elmore height
-		var el = w * 330 / bw;  // elmore offset left
-		var et = w * (-165) / bw; // elmore offset right
-		// aden: 1642 x 1476
+		var el = w * 328 / bw;  // elmore offset left
+		var et = w * (-164) / bw; // elmore offset right
+		// aden: 1642 x 1476 (10 x 9 blocks)
 		var aw = w * 1642 / bw; // aden width
 		var ah = w * 1476 / bw; // aden height
 		var al = 0; // aden offset left
@@ -352,12 +352,14 @@ jQuery(function() {
 						events: {
 							load: function() {
 								this.renderer.image(
-										// left offset: 330
-										// top offset: -165
+										// left offset: 328 (2 blocks)
+										// top offset: -164 (-1 block)
 										'/maps/ElmoreC1_Map.jpg', // 1312x984
 										el, et, ew, eh
 								).add();
 								this.renderer.image(
+										// left offset: 0
+										// top offset: 984 (6 blocks)
 										'/maps/AdenC1_Map.jpg', // 1642x1476
 										al, at, aw, ah
 								).add();
@@ -373,8 +375,8 @@ jQuery(function() {
 						minPadding: 0,
 						startOnTick: false,
 						endOnTick: false,
-						min: -131070,
-						max: 196578
+						min: -131072,
+						max: 196608
 					},
 					yAxis: {
 						visible: false,
@@ -383,8 +385,8 @@ jQuery(function() {
 						minPadding: 0,
 						startOnTick: false,
 						endOnTick: false,
-						min: -229368,
-						max: 262070
+						min: -229376,
+						max: 262144
 					},
 					legend: {
 						enabled: false
